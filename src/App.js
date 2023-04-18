@@ -1,24 +1,47 @@
-import logo from './logo.svg';
+import React, { useState,useEffect } from 'react';
+import Values from 'values.js'
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import SingleColour from './SingleColour';
+import Row from 'react-bootstrap/Row'
+
 
 function App() {
+  let [color,setColor]=useState();
+  let [list,setList]=useState(new Values('#ff2500').all(10))
+  let [error,setError]=useState(false)
+  
+  const onHandleSubmit=(e)=>{
+    e.preventDefault()
+    // console.log('color app')
+    try{
+    const mycolor=new Values(color).all(10)
+    setList(mycolor)
+
+    }catch(error){
+      setError(true)
+      setTimeout(()=>{
+        setError(false)
+      },2000)
+    }
+  }
+  // useEffect(()=>{
+  //   onHandleSubmit()
+  // },[])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+     <h3 className='mx-1'><span className='text-primary'>C</span>OLOR <span className='text-warning'>P</span>ICKER</h3>
+     <form onSubmit={onHandleSubmit} className='mx-1'>
+      <input type='text' value={color} placeholder='#ff2500' onChange={(e)=>setColor(e.target.value)} style={{border:error?'1px solid red':'1px solid black'}}/>
+      <button type='submit' onClick={onHandleSubmit} className='bg-warning'>Generate</button>
+     </form>
+     <div className='d-flex flex-wrap my-2'>
+      {list.map((mycol,index)=>{
+        return <SingleColour key={index} {...mycol} index={index} className=''/>
+      })}
+   
+     </div>
+    </>
   );
 }
 
